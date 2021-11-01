@@ -120,6 +120,8 @@ def main():
     gnomadFileName = None
     pathologyFileName = None
     intersectionFile = None
+    annoFileName = None
+
 
     if dataDir != None:
         outFileName = dataDir + "/" + str(options.g) + "-cooccurrences.json"
