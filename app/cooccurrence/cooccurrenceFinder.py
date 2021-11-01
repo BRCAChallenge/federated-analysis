@@ -179,7 +179,8 @@ def run(hgVersion, ensemblRelease, chromosome, gene, phased, p2, vcfFileName, nu
 
     logger.info('reading data from ' + pathogenicityFileName)
     t = time.time()
-    df, pathogenicVariants, benignVariants, unknownVariants = findVariants(pathogenicityFileName, classStrings, hgVersion)
+    #df, pathogenicVariants, benignVariants, unknownVariants = findVariants(pathogenicityFileName, classStrings, hgVersion)
+    df, pathogenicVariants, benignVariants, unknownVariants = readClinvarFile(pathogenicityFileName, chromosome, classStrings)
     logger.info('elapsed time in findVariants() ' + str(time.time() -t))
 
     logger.info('number of pathogenic variants is ' + str(len(pathogenicVariants)))
@@ -707,6 +708,53 @@ def calculateLikelihood(pathCoocs, p1, p2, n, k, df, hgVersion, cohortSize, gnom
         dataPerVus[str(vus)] = data
 
     return dataPerVus
+
+def readClinvarFile(vcfFileName, chromosome, classStrings):
+    with open(vcfFileName, 'r', errors='ignore') as f:
+        lines = f.readlines()
+        counter = 0
+        for line in lines:
+            if line.startswith('##'):
+                counter += 1
+            else:
+                break
+    # #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+    # 1	925952	1019397	G	A	.	.	ALLELEID=1003021;CLNDISDB=MedGen:CN517202;CLNDN=not_p
+    # rovided;CLNHGVS=NC_000001.11:g.925952G>A;CLNREVSTAT=criteria_provided,_single_submitter;CLNSIG=Uncertain_sign
+    # ificance;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;GENEINFO=SAMD11:148398;MC=SO:0001583|missense_var
+    # iant;ORIGIN=1
+    df = pandas.read_csv(vcfFileName, header=0, sep='\t', skiprows=counter)
+    df = df[df['#CHROM'] == chromosome]
+    pathVars = set()
+    benignVars = set()
+    vusVars = set()
+    for i in range(len(df)):
+        chrom = df.iloc[i]['#CHROM']
+        pos = df.iloc[i]['POS']
+        ref = df.iloc[i]['REF']
+        alt = df.iloc[i]['ALT']
+        var = (chrom, pos, ref, alt)
+        info = df.iloc[i]['INFO']
+        infoArray = info.split(';')
+        sig=None
+        for x in infoArray:
+            try:
+                if x.split('=')[0] == 'CLNSIG':
+                    sig = x.split('=')[1]
+            except Exception as e:
+                logger.error('malformed VCF INFO col: ' + str(info))
+                break
+        if sig in classStrings['Pathogenic']:
+            pathVars.add(var)
+        elif sig in classStrings['Benign']:
+            benignVars.add(var)
+        elif sig in classStrings['Unknown']:
+            vusVars.add(var)
+        else:
+            continue
+
+    return df, pathVars, benignVars, vusVars
+
 
 def readVCFFile(vcfFileName):
     return allel.read_vcf(vcfFileName, fields=['samples', 'calldata/GT', 'variants/ALT', 'variants/CHROM',
