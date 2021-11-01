@@ -723,7 +723,8 @@ def readClinvarFile(vcfFileName, chromosome, classStrings):
     # rovided;CLNHGVS=NC_000001.11:g.925952G>A;CLNREVSTAT=criteria_provided,_single_submitter;CLNSIG=Uncertain_sign
     # ificance;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;GENEINFO=SAMD11:148398;MC=SO:0001583|missense_var
     # iant;ORIGIN=1
-    df = pandas.read_csv(vcfFileName, header=0, sep='\t', skiprows=counter)
+    dataDict={'#CHROM':str}
+    df = pandas.read_csv(vcfFileName, header=0, sep='\t', skiprows=counter, dtype=dataDict)
     df = df[df['#CHROM'] == chromosome]
     pathVars = set()
     benignVars = set()
