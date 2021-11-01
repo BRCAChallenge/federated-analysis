@@ -117,7 +117,9 @@ def main():
     print(options)
 
     dataDir = options.data
-    gnomadFileName = pathologyFileName = intersectionFile = None
+    gnomadFileName = None
+    pathologyFileName = None
+    intersectionFile = None
 
     if dataDir != None:
         outFileName = dataDir + "/" + str(options.g) + "-cooccurrences.json"
