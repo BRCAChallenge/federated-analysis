@@ -452,6 +452,9 @@ def addVariantInfo(individualsPerVariant, vcf, chromosome, infoList, df, hgVersi
             info = gnomad[gnomad['#CHROM'] == chrom][gnomad['POS'] == p][gnomad['REF'] == r][gnomad["ALT"] == a]['INFO']
 
             #maxPop, maxFreq, allPopFreq = getAFFromGnomadSites(gnomadFileName, eval(v))
+            popmax = np.nan
+            faf95 = np.nan
+            af = np.nan
             if len(info) == 1:
                 infoArray = info.iloc[0].split(';')
                 varValDict = dict()
@@ -462,9 +465,6 @@ def addVariantInfo(individualsPerVariant, vcf, chromosome, infoList, df, hgVersi
                     _var = varVal.split('=')[0]
                     _val = varVal.split('=')[1]
                     varValDict[_var] = _val
-                popmax = np.nan
-                faf95 = np.nan
-                af = np.nan
                 if 'popmax' in varValDict:
                     popmax = varValDict['popmax']
                 if 'faf95_popmax' in varValDict:
