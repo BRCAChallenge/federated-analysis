@@ -12,7 +12,7 @@
     {"fieldName": "Technique", "fieldType": "categorical", 
 	"fieldValues": ["MOLLI", "ShMOLLI", "NA"], "printFieldCount": "True"},
     {"fieldName": "Age at onset", "fieldType": "numerical", 
-	"fieldValues": ["low":0, "high": 120], "printFieldCount": "True", "printStats": "True"},
+	"fieldValues": {"low": 10, "high": 120}, "printFieldCount": "True", "printStats": "True"},
     {"fieldName": "Native T1 (msec)", "fieldType": "numerical", 
 	"fieldValues": [], "printFieldCount": "True", "printStats": "True"},
     {"fieldName": "ECV", "fieldType": "numerical", 
