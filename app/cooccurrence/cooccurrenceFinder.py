@@ -819,8 +819,11 @@ def findVarsPerIndividual(q, vcf, benignVariants, pathogenicVariants, chromosome
                 if getGenesForVariant([c,p,r,a], ensemblRelease, gene) is None:
                     logger.warning('no gene for variant? ' + str([c,p,r,a]))
                     continue
-
-                genotype = str(int(str(vcf['calldata/GT'][variant][i][0]) + str(vcf['calldata/GT'][variant][i][1]), 2))
+                try:
+                    genotype = str(int(str(vcf['calldata/GT'][variant][i][0]) + str(vcf['calldata/GT'][variant][i][1]), 2))
+                except Exception as e:
+                    logger.error('cooccurrence only works with binary genotypes - skipping ' + str([c,p,r,a]))
+                    continue
                 seqCenter = "NA"
                 study = "NA"
                 if not annoDF is None:
