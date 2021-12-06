@@ -521,14 +521,16 @@ def findVariants(fileName, classStrings, hgVersion):
             pos = int(coord[1])
         ref, alt = coord[2].split('>')
         var = (chrom, pos, ref, alt)
-        if str(df.loc[i, sigColName]) in classStrings['Pathogenic']:
+        sig = str(df.loc[i, sigColName])
+        if sig in classStrings['Pathogenic']:
             pathVars.add(var)
-        elif str(df.loc[i, sigColName]) in classStrings['Benign']:
+        elif sig in classStrings['Benign']:
             benignVars.add(var)
-        #elif str(df.loc[i, sigColName]) in classStrings['Unknown']:
-        if str(df.loc[i, sigColName]) in classStrings['Unknown']:
+        #elif sig in classStrings['Unknown']:
+        if sig in classStrings['Unknown']:
             vusVars.add(var)
         else:
+            logger.warning('encountered unknown variant class string: ' + sig)
             continue
 
     return df, pathVars, benignVars, vusVars
