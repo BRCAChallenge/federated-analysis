@@ -37,6 +37,9 @@ classStrings = { 'Pathogenic':[ 'Pathogenic',
                  'Unknown': [ 'Uncertain significance',
                               'Uncertain_significance',
                               'Conflicting_interpretations_of_pathogenicity',
+                              'not_provided',
+                              'Likely benign',
+                              'Likely_benign'
                               '-']}
 sigColName = 'Clinical_significance'
 coordinateColumnBase = 'Genomic_Coordinate_hg'
@@ -522,7 +525,8 @@ def findVariants(fileName, classStrings, hgVersion):
             pathVars.add(var)
         elif str(df.loc[i, sigColName]) in classStrings['Benign']:
             benignVars.add(var)
-        elif str(df.loc[i, sigColName]) in classStrings['Unknown']:
+        #elif str(df.loc[i, sigColName]) in classStrings['Unknown']:
+        if str(df.loc[i, sigColName]) in classStrings['Unknown']:
             vusVars.add(var)
         else:
             continue
